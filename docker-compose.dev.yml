@@ -2,6 +2,38 @@ version: "3.2"
 
 services:
 
+  auth-service:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+    image: "auth-service:latest"
+    restart: always
+    depends_on:
+      - userService
+    links:
+      - "userService:user-service.local"
+
+  userService:
+    build:
+      context: .
+      dockerfile: apps/users/Dockerfile
+    image: "user-service:latest"
+    restart: always
+    depends_on:
+      - postgres
+    ports:
+      - 8001:8000
+    links:
+      - "postgres:user-database.local"
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: users
+    ports:
+      - '5432:5432'
 
   redis:
     container_name: redis

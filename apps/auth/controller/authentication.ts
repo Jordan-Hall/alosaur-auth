@@ -1,11 +1,12 @@
 import { Body, Controller, Ctx, Post, Get } from "https://deno.land/x/alosaur@v0.26.0/mod.ts";
-import { AuthService, UserModel } from "../service/auth.service.ts";
+import { AuthService } from "../service/auth.service.ts";
 import { SecurityContext } from "https://deno.land/x/alosaur@v0.26.0/src/security/context/security-context.ts";
 import { Authorize } from "https://deno.land/x/alosaur@v0.26.0/src/security/authorization/mod.ts";
 import { JWTSchema } from "../jwtSchema.ts";
+import { UserRO } from "../../users/module/dto/user-response.ts";
 
 interface LoginModel {
-  login: string;
+  username: string;
   password: string;
 }
 
@@ -18,12 +19,10 @@ export class AuthenticationController {
   async postLogin(
     @Ctx() context: SecurityContext,
     @Body() account: LoginModel,
-	) {
-    const user = this.service.validate(account.login, account.password);
-
+  ) {
+    const user = await this.service.validateUser(account.username, account.password);
     if (user) {
-      const result = await context.security.auth.signInAsync<UserModel, unknown>(JWTSchema, user);
-      console.log(result);
+      const result = await context.security.auth.signInAsync<UserRO, unknown>(JWTSchema, user);
       return result;
     }
 
@@ -37,10 +36,12 @@ export class AuthenticationController {
   }
 
   @Authorize(JWTSchema)
-  @Get("/protected")
-  getProtectedData() {
-    return "Hi! this protected info. <br>  <a href='/account/logout'>logout</a>";
+  @Post("/verify")
+  verify(
+    @Ctx() context: SecurityContext,
+    @Body() account: LoginModel,
+	) {
+    return  { code: 200, description: "JWT Verified" }
   }
-
 
 }

@@ -1,10 +1,9 @@
 import { AuthClaims, AuthenticationScheme, Identity } from "https://deno.land/x/alosaur@v0.26.0/src/security/authentication/core/mod.ts";
 import { Content } from "https://deno.land/x/alosaur@v0.26.0/mod.ts";
 import { SecurityContext } from "https://deno.land/x/alosaur@v0.26.0/src/security/context/security-context.ts";
-import { verify as verifySignature } from "https://deno.land/x/djwt@v1.9/_signature.ts";
-import { create, decode, getNumericDate } from "https://deno.land/x/djwt@v1.9/mod.ts";
-import { Algorithm } from "https://deno.land/x/djwt@v1.9/_algorithm.ts";
-import { DAYS_30 } from "../../../auth/environmental.ts";
+import { verify as verifySignature } from "https://deno.land/x/djwt@v2.0/signature.ts";
+import { create, decode, getNumericDate } from "https://deno.land/x/djwt@v2.0/mod.ts";
+import { Algorithm } from "https://deno.land/x/djwt@v2.0/algorithm.ts";
 
 export const IdentityKey = "__identity_jwt";
 const AuthorizationHeader = "Authorization";
@@ -15,8 +14,8 @@ export class LibertyJWTSchema implements AuthenticationScheme  {
 
 	constructor(
 		protected readonly algorithm: Algorithm,
-    protected readonly secret: string,
-    protected readonly expires: number = DAYS_30,
+		protected readonly expires: number = (30 * 24 * 60 * 60 * 1000),
+		protected readonly options: { certs?: { publicKey: string, privateKey: string}, type: string, secret?: string  }
 	) {
 	}
 
@@ -24,7 +23,7 @@ export class LibertyJWTSchema implements AuthenticationScheme  {
 	async authenticate(context: SecurityContext): Promise<void> {
 		const token = this.getToken(context);
 		if (token) {
-			const payload = await safeVerifyJWT(token, this.secret);
+			const payload = await safeVerifyJWT(token, this.options.secret ? this.options.secret : this.options.certs?.publicKey as string);
 
 			if (payload) {
 				const session = context.security.session;
@@ -42,14 +41,15 @@ export class LibertyJWTSchema implements AuthenticationScheme  {
 	public async signInAsync<I, R>(
     context: SecurityContext,
     identity: Identity<I>,
-    claims?: AuthClaims,
-  ): Promise<R> {
+		claims: AuthClaims = {},
+	): Promise<R> {
+		console.log('user', identity);
 		const jwt = await create(
-			{ alg: this.algorithm, typ: "JWT" },
-			{ exp: getNumericDate(this.expires), ...identity },
-			this.secret,
+			{ alg: this.algorithm, typ: this.options.type || 'JWT'  },
+			{ exp: getNumericDate(this.expires), ...identity},
+			this.options.secret ? this.options.secret : this.options.certs?.privateKey as string,
 		);
-		context.security.auth.identity = () => identity as any;
+		context.security.auth.identity = () => identity as never;
 		const session = context.security.session;
 		const currentSessions = await session?.get<{ [key: string]: string }>(IdentityKey);
 

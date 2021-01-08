@@ -6,4 +6,7 @@ export class CreateUserDto {
   readonly email!: string;
 
   readonly password!: string;
+
+  readonly role!: 'admin' | 'editor';
+  readonly profileImage: unknown;
 }

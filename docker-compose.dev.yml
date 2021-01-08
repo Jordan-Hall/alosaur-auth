@@ -10,10 +10,16 @@ services:
     restart: always
     depends_on:
       - userService
+      - redis
+    environment:
+      - USER_SERVICE=user-service
+      - REDIS_HOST=redis
     links:
-      - "userService:user-service.local"
+      - "user-service:userService"
+      - "postgres:db"
 
-  userService:
+
+  user-service:
     build:
       context: .
       dockerfile: apps/users/Dockerfile
@@ -23,20 +29,20 @@ services:
       - postgres
     ports:
       - 8001:8000
-    links:
-      - "postgres:user-database.local"
+    environment:
+      - POSTGRES_HOST=postgres
+
 
   postgres:
     image: postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: users
+      POSTGRES_DB: lts
     ports:
       - '5432:5432'
 
   redis:
-    container_name: redis
     image: redis
     restart: always
     ports:

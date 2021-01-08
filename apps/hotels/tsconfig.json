@@ -1,0 +1,16 @@
+{
+	"compilerOptions": {
+		"plugins": [
+			{
+				"name": "typescript-deno-plugin"
+			}
+		],
+		"experimentalDecorators": true,
+		"emitDecoratorMetadata": true,
+		"isolatedModules": true,
+		"strict": false
+	},
+	"include": [
+		"./**/*.ts"
+	]
+}

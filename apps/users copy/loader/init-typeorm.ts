@@ -1,4 +1,4 @@
-import { User } from "../module/user.entity.ts";
+import { User } from "../module/user.entity";
 import { createConnection } from "https://raw.githubusercontent.com/denolib/typeorm/master/mod.ts";
 
 export function initTypeORM() {

@@ -3,7 +3,7 @@ import {
   Entity,
 	PrimaryGeneratedColumn,
 	BeforeInsert
-} from "https://raw.githubusercontent.com/denolib/typeorm/master/mod.ts";
+} from "https://deno.land/x/typeorm@v0.2.23-rc10/mod.ts";
 import * as bcrypt from "https://deno.land/x/bcrypt@v0.2.4/mod.ts";
 import { UserRO } from "./dto/user-response.ts";
 

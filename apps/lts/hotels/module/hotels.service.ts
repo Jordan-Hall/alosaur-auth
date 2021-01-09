@@ -1,8 +1,8 @@
 import { AutoInjectable, BadRequestError,  } from "../../../server-mods.ts";
-import { DeleteResult, getCustomRepository } from "https://raw.githubusercontent.com/denolib/typeorm/master/mod.ts";
+import { DeleteResult, getCustomRepository } from "https://deno.land/x/typeorm@v0.2.23-rc10/mod.ts";
 import { HotelRepository } from "./hotels.repository.ts";
 import { Hotel } from "./hotels.entity.ts";
-import { QueryDeepPartialEntity } from "https://raw.githubusercontent.com/denolib/typeorm/master/src/query-builder/QueryPartialEntity.ts";
+import { QueryDeepPartialEntity } from "https://deno.land/x/typeorm@v0.2.23-rc10/src/query-builder/QueryPartialEntity.ts";
 
 @AutoInjectable()
 export class UserService {

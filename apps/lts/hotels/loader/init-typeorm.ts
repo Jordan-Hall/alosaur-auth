@@ -1,5 +1,5 @@
 import { User } from "../module/hotels.entity.ts";
-import { createConnection } from "https://raw.githubusercontent.com/denolib/typeorm/master/mod.ts";
+import { createConnection } from "https://deno.land/x/typeorm@v0.2.23-rc10/mod.ts";
 
 export function initTypeORM() {
   return createConnection({

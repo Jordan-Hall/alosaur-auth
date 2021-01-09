@@ -19,11 +19,13 @@ app.useCors(
     .AllowAnyHeader(),
 );
 
-const redisHost = Deno.env.get("REDIS_HOST") || "127.0.0.1";
+const sessionStore = new RedisSession({
+  hostname: Deno.env.get('REDIS_HOST') || '"127.0.0.1',
+  password: Deno.env.get('REDIS_PASSWORD'),
+  port: Deno.env.get('REDIS_PORT'),
+  name: Deno.env.get('REDIS_USERNAME')
+});
 
-console.log(redisHost);
-
-const sessionStore = new RedisSession(redisHost, 6379);
 await sessionStore.init();
 
 

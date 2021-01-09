@@ -1,4 +1,4 @@
-import { connect, Redis } from "https://deno.land/x/redis/mod.ts";
+import { connect, Redis, RedisConnectOptions } from "https://deno.land/x/redis/mod.ts";
 import { SessionStore } from "https://deno.land/x/alosaur@v0.26.0/src/security/session/src/store/store.interface.ts";
 
 type StringKeyObject = { [key: string]: unknown };
@@ -9,13 +9,10 @@ export class RedisSession<T = StringKeyObject> implements SessionStore {
 
 	private allSid: string[] = [];
 
-	constructor(protected hostname: string, protected port: number) {}
+	constructor(protected options: RedisConnectOptions) {}
 
   async init(): Promise<void> {
-    const redis = await connect({
-			hostname: "127.0.0.1",
-			port: 6379,
-		});
+		const redis = await connect(this.options);
 		this.redis = redis;
 		return Promise.resolve();
   }

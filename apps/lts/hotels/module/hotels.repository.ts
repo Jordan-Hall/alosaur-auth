@@ -1,4 +1,4 @@
-import { Repository, EntityRepository } from "https://raw.githubusercontent.com/denolib/typeorm/master/mod.ts";
+import { Repository, EntityRepository } from "https://deno.land/x/typeorm@v0.2.23-rc10/mod.ts";
 import { Hotel } from "./hotels.entity.ts";
 
 @EntityRepository(Hotel)

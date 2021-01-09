@@ -1,5 +1,5 @@
 import { AutoInjectable, BadRequestError,  } from "../../../server-mods.ts";
-import { DeleteResult, getCustomRepository } from "https://raw.githubusercontent.com/denolib/typeorm/master/mod.ts";
+import { DeleteResult, getCustomRepository } from "https://deno.land/x/typeorm@v0.2.23-rc10/mod.ts";
 import { UserRepository } from "./user.repository.ts";
 import { User } from "./user.entity.ts";
 import { CreateUserDto } from "./dto/create-user.ts";
